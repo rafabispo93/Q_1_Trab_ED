@@ -40,7 +40,7 @@ void main() {
     char notation[80];
                     /*notation armazena a expressao*/
 
-    tree *create(char notation[150]);
+    tree *create(char notation[80]);
 
     void inorder(tree *root);
 
@@ -52,6 +52,7 @@ void main() {
     printf("\n Entre com uma expressao polonesa reversa :\n");
 
     scanf("%99[^\n]",notation);
+    printf("%s", notation);
 
     top=-1;			/*inicializa pilha*/
 
@@ -69,7 +70,13 @@ void main() {
 
     printf("\n Pos-Ordem: \n");
 
-    postorder(root);
+    postorder(root); 
+    
+    int h = calcHeight(root);
+    printf("\n Altura: \n%d", h);
+    buscar(root);
+
+   
 }
 
 tree *create(char notation[]) {
@@ -93,7 +100,8 @@ tree *create(char notation[]) {
 
         aux=((tree*)malloc(sizeof(tree)));
 
-        aux->left=aux->right=NULL;
+        aux->left= NULL;
+        aux->right=NULL;
 
         aux->value=element;
 
@@ -111,26 +119,29 @@ tree *create(char notation[]) {
          else {
             printf("\n Caracter invalido\n");
          }
-        pos++;
-
+        pos++;      
         element=notation[pos];
 
     }
 
      aux=pop();
 
-    return(aux);
+     return(aux);
 
 }
 
 void push(tree *Node) {
 
-    if(top+1 >= size)
+    if(top+1 >= size) {
+        
         printf("Pilha Cheia\n");
-
-    top++;
-
-    stack[top]=Node;
+    
+    }
+    else {
+        top++;
+        stack[top]=Node;
+    }
+    
 
 }
 
@@ -138,10 +149,9 @@ tree* pop() {
 
     tree *Node;
 
-    if(top==-1)
-
-    printf("\nPilha Vazia..\n");
-
+    if(top==-1) {
+        printf("\nPilha Vazia..\n");
+    }
     Node =stack[top];
 
     top--;
@@ -197,5 +207,37 @@ void postorder(tree *root) {
 
         printf("%c",aux->value);
 
+    }
+}
+
+int calcHeight(tree *root) {
+    if (root == NULL) {
+        return -1;
+    }
+
+    int left = calcHeight(root->left);
+    int right = calcHeight(root->right);
+
+    if (left > right) {
+        return left + 1;
+    } else {
+        return right + 1;
+    }
+}
+buscar (tree *r) {
+    struct node *busca;
+    busca = ((tree*)malloc(sizeof(tree)));
+    busca = r;
+    while (busca != NULL) {
+        printf("\n%c", busca->value);
+        printf("\n%c", busca->right->value);
+        printf("\n%c", busca->left->value);
+        busca =  busca->right;
+    }
+    while (busca != NULL) {
+        printf("\n%c", busca->value);
+        printf("\n%c", busca->right->value);
+        printf("\n%c", busca->left->value);
+        busca =  busca->left;
     }
 }
