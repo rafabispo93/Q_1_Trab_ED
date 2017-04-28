@@ -15,6 +15,7 @@
 #include<stdio.h>
 #include <stdlib.h>
 #include<ctype.h>
+#include <string.h>
 
 #define size 40
 
@@ -32,6 +33,16 @@ tree;
 tree *stack[size];
 
 int top;
+char newNotation[20];
+int newCount = 0;
+
+int numbers[20];
+char operators[20];
+int top2 = 0;
+int top3 = 0;
+int results[20];
+int topR = 0;
+int result = 0;
 
 void main() {
 
@@ -52,7 +63,7 @@ void main() {
     printf("\n Entre com uma expressao polonesa reversa :\n");
 
     scanf("%99[^\n]",notation);
-    printf("%s", notation);
+    printf("%s", &notation);
 
     top=-1;			/*inicializa pilha*/
 
@@ -74,7 +85,8 @@ void main() {
     
     int h = calcHeight(root);
     printf("\n Altura: \n%d", h);
-    buscar(root);
+    calcPol();
+//    buscar(root);
 
    
 }
@@ -166,11 +178,14 @@ void inorder(tree *root) {
     tree *aux;
 
     aux=root;
+    
 
     if(aux!=NULL) {
         inorder(aux->left);
-
+        
         printf("%c",aux->value);
+        newNotation[newCount] = aux->value;
+        newCount++;
 
         inorder(aux->right);
 
@@ -240,4 +255,89 @@ buscar (tree *r) {
         printf("\n%c", busca->left->value);
         busca =  busca->left;
     }
+}
+
+int calcPol () {
+    printf("\n Calculo da expressao Polonesa Reversa: \n");
+    
+    
+    for(int t = 0; t < newCount; t++) {
+//        printf("%c \n",newNotation[t]);
+//        printf("%d \n",newNotation[t] - '0');
+        if (isdigit(newNotation[t])) {
+            
+            numbers[top2] = newNotation[t] - '0';
+//            printf("AQUI %d\n",numbers[top2]);
+            top2++;
+        } else {
+            
+              operators[top3] = newNotation[t];
+              top3++;            
+        }
+        
+        
+        
+    }
+    for (int as = top3; as >= 0; as--){
+        if(top2 >=0){
+//            printf("%c OPERADOR\n",operators[as]);
+                if(operators[as] == '+') {
+                    result = numbers[top2 - 2] + numbers[top2 -1];
+                    results[topR] =numbers[top2 - 2] + numbers[top2 -1];
+                    topR++;
+                    top2--;
+                    top2--;
+                } if (operators[as] == '-') {
+                    result = numbers[top2 - 2] - numbers[top2 -1];
+                    results[topR] =numbers[top2 - 2] - numbers[top2 -1];
+                    topR++;
+                    top2--;
+                    top2--;
+                } else if (operators[as] == '*') {
+                    result = numbers[top2 - 2] * numbers[top2 -1];
+                    results[topR] =numbers[top2 - 2] * numbers[top2 -1];
+                    topR++;
+                    top2--;
+                    top2--;
+                } else if (operators[as] == '/') {
+                    result = numbers[top2 - 2] / numbers[top2 -1];
+                    results[topR] =numbers[top2 - 2] / numbers[top2 -1];
+                    topR++;
+                    top2--;
+                    top2--;
+                }
+                    
+            
+        } else {
+//            printf("%d VAlor top2\n", top2);
+            if(operators[as] == '+') {
+                printf("ENTROU no else +\n");
+                result = results[topR - 2] + results[topR - 1];
+                printf("%d\n", result);
+                topR--;
+                topR--;
+            } else if (operators[as] == '-') {
+                printf("ENTROU no else -\n");
+                result = results[topR - 2] - results[topR - 1];
+                printf("%d\n", result);
+                topR--;
+                topR--;
+            } else if (operators[as] == '*') {
+                printf("ENTROU no else *\n");
+                result = results[topR - 2] * results[topR - 1];
+                printf("%d\n", result);
+                topR--;
+                topR--;
+            } else if (operators[as] == '/') {
+                printf("ENTROU no else / \n");
+                result = results[topR - 2] / results[topR - 1];
+                printf("%d\n", result);
+                topR--;
+                topR--;
+            }
+
+        }              
+    }
+    printf("%d", result);
+    return result;
 }
